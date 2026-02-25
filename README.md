@@ -4,7 +4,7 @@
 
 Krapao is a mobile-first, privacy-focused financial tracker designed for speed and simplicity. Built with Next.js 15 and Tailwind CSS, it features a premium glassmorphism dark theme and robust cloud synchronization.
 
-![Dashboard Preview](file:///image.png)
+![Dashboard Preview](https://raw.githubusercontent.com/ChunWarayut/Krapao/refs/heads/main/public/image.png)
 
 ## ✨ Key Features
 
