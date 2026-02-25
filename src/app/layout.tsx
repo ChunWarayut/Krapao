@@ -7,6 +7,7 @@ import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 import AuthGuard from "@/components/auth/AuthGuard";
 import { Prompt } from "next/font/google";
 import StructuredData from "@/components/seo/StructuredData";
+import InstallPrompt from "@/components/pwa/InstallPrompt";
 
 const promptFont = Prompt({
   subsets: ["thai", "latin"],
@@ -47,7 +48,15 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: "/logo.png",
-    apple: "/logo.png",
+    apple: "/icon-192x192.png",
+  },
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Krapao",
+  },
+  formatDetection: {
+    telephone: false,
   },
   verification: {
     google: "google-site-verification-placeholder", // User can replace this later
@@ -59,6 +68,7 @@ export const viewport = {
   initialScale: 1,
   maximumScale: 1,
   userScale: 0,
+  themeColor: "#0B1120",
 };
 
 export default function RootLayout({
@@ -70,6 +80,7 @@ export default function RootLayout({
     <html lang="th" className="dark" suppressHydrationWarning>
       <body className={`${promptFont.variable} ${promptFont.className} antialiased bg-background text-foreground transition-colors duration-300`} suppressHydrationWarning>
         <StructuredData />
+        <InstallPrompt />
         <div className="flex min-h-screen relative overflow-hidden">
           {/* Animated Background Mesh */}
           <div className="fixed inset-0 z-[-1] mesh-gradient opacity-20" />
