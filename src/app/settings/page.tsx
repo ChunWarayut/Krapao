@@ -1,16 +1,19 @@
 "use client"
 
+import { useState } from 'react';
 import { useKrapaoStore } from '@/lib/store';
 import { generateBudgetReport } from '@/lib/pdfExport';
 import { Eye, EyeOff, FileDown, Database, Trash2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export default function SettingsPage() {
+    const [isDeleting, setIsDeleting] = useState(false);
     const {
         privacyMode,
         togglePrivacyMode,
         transactions,
-        categories
+        categories,
+        resetAllData
     } = useKrapaoStore();
 
     const handleExport = async () => {
@@ -20,7 +23,7 @@ export default function SettingsPage() {
         const expense = monthlyTrans.filter(t => t.type === 'expense').reduce((acc, t) => acc + t.amount, 0);
 
         await generateBudgetReport(
-            transactions.slice(0, 50), // Export last 50 for demo
+            transactions.slice(0, 50),
             categories,
             {
                 monthlyIncome: income,
@@ -28,6 +31,21 @@ export default function SettingsPage() {
                 healthScore: income > 0 ? Math.round(((income - expense) / income) * 100) : 0
             }
         );
+    };
+
+    const handleDeleteAll = async () => {
+        if (confirm('ต้องการลบข้อมูลทั้งหมดใช่หรือไม่? (การกระทำนี้ไม่สามารถย้อนกลับได้)')) {
+            setIsDeleting(true);
+            try {
+                await resetAllData();
+                alert('ลบข้อมูลทั้งหมดเรียบร้อยแล้ว');
+            } catch (error) {
+                console.error('Delete error:', error);
+                alert('เกิดข้อผิดพลาดในการลบข้อมูล: ' + (error instanceof Error ? error.message : 'Unknown error'));
+            } finally {
+                setIsDeleting(false);
+            }
+        }
     };
 
     const sections = [
@@ -72,15 +90,9 @@ export default function SettingsPage() {
                     name: 'ลบข้อมูลทั้งหมด',
                     description: 'ลบประวัติธุรกรรมและเป้าหมายทั้งหมดอย่างถาวร',
                     icon: Trash2,
-                    action: async () => {
-                        if (confirm('ต้องการลบข้อมูลทั้งหมดใช่หรือไม่?')) {
-                            const { resetAllData } = useKrapaoStore.getState();
-                            await resetAllData();
-                            alert('ลบข้อมูลทั้งหมดเรียบร้อยแล้ว');
-                        }
-                    },
-                    status: 'ล้างข้อมูล',
-                    color: 'text-rose-500'
+                    action: handleDeleteAll,
+                    status: isDeleting ? 'กำลังลบ...' : 'ล้างข้อมูล',
+                    color: isDeleting ? 'text-slate-500' : 'text-rose-500'
                 }
             ]
         }

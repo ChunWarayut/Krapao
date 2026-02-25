@@ -26,31 +26,44 @@ export default function ReceiptScanner() {
         setIsProcessing(true);
         setError(null);
         try {
-            const worker = await createWorker('eng');
+            const worker = await createWorker('tha+eng');
             const { data: { text } } = await worker.recognize(imgSource);
             await worker.terminate();
 
-            // Simple regex for total amount detection (e.g., "$50.00", "50.00", "Total: 50")
-            const amountRegex = /(?:total|sum|amount|ชำระ)?[:\s]*\$?(\d+[\.\,]\d{2})/i;
+            console.log("OCR Result:", text);
+
+            // Enhanced regex for total amount detection
+            // Handles: Total: 50.00, ยอดรวม 50.00, ชำระ 50.00, Net 50.00
+            const amountRegex = /(?:total|sum|amount|net|ยอดรวม|ชำระ|รวมทั้งสิ้น|สุทธิ)[:\s]*\$?(\d{1,3}(?:[,\s]\d{3})*[\.\,]\d{2})/i;
             const match = text.match(amountRegex);
 
             if (match) {
-                const amount = parseFloat(match[1].replace(',', '.'));
+                const amount = parseFloat(match[1].replace(/[,\s]/g, '').replace(',', '.'));
                 setExtractedData({
                     amount,
-                    note: `Receipt Scan - ${new Date().toLocaleDateString()}`
+                    note: `Receipt Scan - ${new Date().toLocaleDateString('th-TH')}`
                 });
             } else {
-                // Fallback: search for any number that looks like a decimal amount
-                const fallbackRegex = /(\d+[\.\,]\d{2})/;
-                const fallbackMatch = text.match(fallbackRegex);
-                if (fallbackMatch) {
+                // Fallback: search for any number that looks like a decimal amount (xx.xx)
+                // usually the largest number on the receipt is the total
+                const fallbackRegex = /(\d{1,3}(?:[,\s]\d{3})*[\.\,]\d{2})/g;
+                const matches = text.matchAll(fallbackRegex);
+                let maxAmount = 0;
+
+                for (const m of matches) {
+                    const val = parseFloat(m[1].replace(/[,\s]/g, '').replace(',', '.'));
+                    if (val > maxAmount && val < 1000000) { // basic sanity check
+                        maxAmount = val;
+                    }
+                }
+
+                if (maxAmount > 0) {
                     setExtractedData({
-                        amount: parseFloat(fallbackMatch[1].replace(',', '.')),
-                        note: 'Receipt Scan'
+                        amount: maxAmount,
+                        note: `Receipt Scan (Auto) - ${new Date().toLocaleDateString('th-TH')}`
                     });
                 } else {
-                    setError("Couldn't detect amount. Please enter manually.");
+                    setError("Couldn't detect amount accurately. Please enter manually.");
                 }
             }
         } catch (err) {
@@ -81,7 +94,10 @@ export default function ReceiptScanner() {
                 </div>
 
                 <div className="glass-card p-8 rounded-4xl">
-                    <TransactionForm onClose={() => setExtractedData(null)} />
+                    <TransactionForm
+                        onClose={() => setExtractedData(null)}
+                        initialData={extractedData}
+                    />
                 </div>
             </div>
         );

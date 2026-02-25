@@ -18,7 +18,7 @@ interface KrapaoState {
     setUser: (user: { id: string, isGuest: boolean } | null) => void;
     loadUserData: (userId: string) => Promise<void>;
     clearUserData: () => void;
-    _sync: (operation: () => Promise<any> | any) => Promise<void>;
+    _sync: (operation: () => Promise<unknown> | unknown) => Promise<void>;
 
     addTransaction: (transaction: Omit<Transaction, 'id'>) => void;
     deleteTransaction: (id: string) => void;
@@ -63,12 +63,15 @@ export const useKrapaoStore = create<KrapaoState>()(
                     // Fetch goals
                     const { data: goalsData } = await supabase.from('goals').select('*').eq('user_id', userId);
 
-                    set((state) => ({
-                        pockets: pocketsData && pocketsData.length > 0 ? pocketsData : state.pockets,
+                    set({
+                        pockets: pocketsData && pocketsData.length > 0 ? pocketsData : [
+                            { id: 'pk-1', name: 'กระเป๋าหลัก', icon: 'Wallet', color: '#10b981', balance: 0 },
+                            { id: 'pk-2', name: 'เงินออม', icon: 'PiggyBank', color: '#34d399', balance: 0 },
+                        ],
                         categories: categoriesData && categoriesData.length > 0 ? categoriesData : DEFAULT_CATEGORIES,
                         transactions: txData || [],
                         goals: goalsData || [],
-                    }));
+                    });
                 } catch (error) {
                     console.error('Error loading user data:', error);
                 }
@@ -91,11 +94,11 @@ export const useKrapaoStore = create<KrapaoState>()(
                 set({ isSyncing: true, lastSyncError: null });
                 try {
                     const result = await operation();
-                    if (result && result.error) throw result.error;
+                    if (result && (result as any).error) throw (result as any).error;
                     set({ isSyncing: false });
-                } catch (err: any) {
+                } catch (err: unknown) {
                     console.error("Sync error:", err);
-                    set({ isSyncing: false, lastSyncError: err.message || 'Sync failed' });
+                    set({ isSyncing: false, lastSyncError: err instanceof Error ? err.message : 'Sync failed' });
                 }
             },
 
@@ -215,7 +218,7 @@ export const useKrapaoStore = create<KrapaoState>()(
                 }));
 
                 // Map camelCase to snake_case for Supabase
-                const supaUpdate: any = {}; // Use any here temporarily for Supabase dynamic update object
+                const supaUpdate: Record<string, unknown> = {};
                 if (updated.name) supaUpdate.name = updated.name;
                 if (updated.emoji) supaUpdate.emoji = updated.emoji;
                 if (updated.targetAmount !== undefined) supaUpdate.target_amount = updated.targetAmount;
@@ -258,12 +261,24 @@ export const useKrapaoStore = create<KrapaoState>()(
                     goals: [],
                 });
 
+                // 3. Clear localStorage as insurance (Zustand persist manages this, but this ensures it's dead)
+                if (typeof window !== 'undefined') {
+                    localStorage.removeItem('krapao-storage');
+                }
+
                 // 2. If synced to Supabase, delete cloud data too
-                if (user && !user.id.startsWith('guest-')) {
+                if (user) {
                     await get()._sync(async () => {
-                        await supabase.from('transactions').delete().eq('user_id', user.id);
-                        await supabase.from('pockets').delete().eq('user_id', user.id);
-                        await supabase.from('goals').delete().eq('user_id', user.id);
+                        // Delete transactions first (due to foreign key dependencies)
+                        const { error: txError } = await supabase.from('transactions').delete().eq('user_id', user.id);
+                        if (txError) throw txError;
+
+                        const { error: goalError } = await supabase.from('goals').delete().eq('user_id', user.id);
+                        if (goalError) throw goalError;
+
+                        const { error: pocketError } = await supabase.from('pockets').delete().eq('user_id', user.id);
+                        if (pocketError) throw pocketError;
+
                         return { error: null };
                     });
                 }

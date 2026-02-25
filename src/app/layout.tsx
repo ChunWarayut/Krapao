@@ -5,11 +5,11 @@ import Header from "@/components/layout/Header";
 import MobileNav from "@/components/layout/MobileNav";
 import ServiceWorkerRegistrar from "@/components/ServiceWorkerRegistrar";
 import AuthGuard from "@/components/auth/AuthGuard";
-import { DM_Sans } from "next/font/google";
+import { Prompt } from "next/font/google";
 
-const inter = DM_Sans({
-  subsets: ["latin"],
-  variable: "--font-dm-sans",
+const promptFont = Prompt({
+  subsets: ["thai", "latin"],
+  variable: "--font-prompt",
   weight: ["300", "400", "500", "600", "700", "800", "900"],
   display: "swap",
 });
@@ -33,7 +33,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="th" className="dark" suppressHydrationWarning>
-      <body className={`${inter.className} antialiased bg-background text-foreground transition-colors duration-300`} suppressHydrationWarning>
+      <body className={`${promptFont.variable} ${promptFont.className} antialiased bg-background text-foreground transition-colors duration-300`} suppressHydrationWarning>
         <div className="flex min-h-screen relative overflow-hidden">
           {/* Animated Background Mesh */}
           <div className="fixed inset-0 z-[-1] mesh-gradient opacity-20" />

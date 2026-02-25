@@ -9,13 +9,19 @@ import { format } from 'date-fns';
 import { Check, Search, Wallet } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
-export default function TransactionForm({ onClose }: { onClose?: () => void }) {
+export default function TransactionForm({
+    onClose,
+    initialData
+}: {
+    onClose?: () => void,
+    initialData?: { amount: number; note: string }
+}) {
     const { categories, pockets, addTransaction } = useKrapaoStore();
 
     const [type, setType] = useState<TransactionType>('expense');
     const [quickInput, setQuickInput] = useState('');
-    const [amount, setAmount] = useState('');
-    const [note, setNote] = useState('');
+    const [amount, setAmount] = useState(initialData?.amount?.toString() || '');
+    const [note, setNote] = useState(initialData?.note || '');
     const [categoryId, setCategoryId] = useState(categories.find(c => c.type === 'expense')?.id || '');
     const [pocketId, setPocketId] = useState(pockets[0]?.id || '');
     const [date, setDate] = useState(format(new Date(), 'yyyy-MM-dd'));
