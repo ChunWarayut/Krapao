@@ -1,62 +1,86 @@
-# 🌿 Krapao (กระเป๋า)
+# 👜 Krapao (กระเป๋า)
 
-### Essential Digital Wallet for Minimalist Living
+### *Your Digital Wallet that Actually Helps You Save.*
 
-Krapao is a mobile-first, privacy-focused financial tracker designed for speed and simplicity. Built with Next.js 15 and Tailwind CSS, it features a premium glassmorphism dark theme and robust cloud synchronization.
+**Krapao** คือเว็บแอปพลิเคชันจัดการการเงินส่วนบุคคลแบบ Open Source ที่ออกแบบมาเพื่อคนทั่วไป โดยเน้นความง่าย (Simplicity) และความเป็นส่วนตัว (Privacy) ช่วยให้คุณจัดระเบียบ "กระเป๋า" ของคุณได้ในไม่กี่คลิก พร้อมระบบ AI ช่วยวิเคราะห์และสแกนใบเสร็จที่แม่นยำ
 
-![Dashboard Preview](https://raw.githubusercontent.com/ChunWarayut/Krapao/refs/heads/main/public/image.png)
-
-## ✨ Key Features
-
-- **⚡ Magic Scan (OCR)**: Instantly extract totals from receipts using Tesseract.js.
-- **🏷️ Smart Tagging**: AI-inspired categorization for your spending.
-- **👛 Multi-Pocket**: Manage Cash, Bank, and Savings with real-time balance tracking.
-- **🎯 Goal Tracker**: Visual, interactive progress tracking for your financial goals.
-- **🕵️ Privacy Mode**: Instantly blur all balances for safe use in public.
-- **📊 Professional Reports**: Export monthly budget summaries to beautifully styled PDFs.
-- **☁️ Cloud Sync**: Real-time backup and multi-device synchronization with Supabase.
-- **🌑 Pure Dark Theme**: Optimized glassmorphism UI designed for high-end aesthetics.
-
-## 🚀 Tech Stack
-
-- **Framework**: Next.js 15 (App Router / Turbopack)
-- **Database/Auth**: Supabase (PostgreSQL + RLS)
-- **State**: Zustand (Offline-first architecture)
-- **Styling**: Vanilla CSS + Tailwind + Lucide Icons
-- **Utility**: Date-fns, Tesseract.js, jsPDF
-- **Design**: Premium Glassmorphism with HSL tailored color palettes
-
-## 🛠️ Getting Started
-
-1. **Install Dependencies**:
-
-   ```bash
-   npm install
-   ```
-2. **Setup Environment**:
-   Create a `.env` file with your Supabase credentials:
-
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
-   NEXT_PUBLIC_SUPABASE_PUBLISHABLE_DEFAULT_KEY=your_key
-   ```
-3. **Database Setup**:
-   Run the SQL script provided in the documentation to initialize tables and Row Level Security (RLS) policies.
-4. **Run Project**:
-
-   ```bash
-   npm run dev  # Development
-   npm run build # Production Build
-   ```
-
-## 🔐 Security & Privacy
-
-Krapao implements an **Offline-First** strategy. Data is visible instantly through optimistic UI updates and synchronized securely in the background. Each user's data is isolated using **Row Level Security (RLS)**, ensuring that your financial records are only accessible to you.
-
-## 📱 Mobile-First Design
-
-The entire UI is built with a **Bottom-Heavy Navigation** strategy, ensuring all critical actions are within reach of your thumb.
+**[🌐 ลองใช้งาน Demo](https://krapao.vercel.app/)** | **[📖 วิธีการติดตั้ง](#-getting-started)** | **[🐞 แจ้งปัญหา](https://github.com/ChunWarayut/Krapao/issues)**
 
 ---
 
-*Created with ❤️ for simple, secure finance.*
+## ✨ Features (ทำไมต้อง Krapao?)
+
+*   **👛 Multi-Pocket System:** แยกกระเป๋าเงินเก็บ เงินกิน และเงินเที่ยวออกจากกันอย่างชัดเจน พร้อมติดตามยอดเงินแบบ Real-time
+*   **⚡ Magic Scan (OCR):** บันทึกรายจ่ายเร็วฟ้าผ่าด้วยระบบสแกนใบเสร็จ ดึงยอดเงินอัตโนมัติ (Powered by Tesseract.js)
+*   **🏷️ Smart Tagging:** จัดหมวดหมู่ค่าใช้จ่ายอัจฉริยะ ช่วยให้คุณรู้ว่าเงินหายไปกับอะไรมากที่สุด
+*   **📊 Insightful Dashboard:** สรุปภาพรวมการเงินด้วยกราฟที่สวยงามและเข้าใจง่าย (Powered by Recharts)
+*   **🎯 Goal Tracker:** วางแผนและติดตามเป้าหมายการออมเงินด้วยระบบ Visual Progress
+*   **🔒 Privacy First:** ข้อมูลของคุณถูกเก็บอย่างปลอดภัยด้วย Supabase และมีโหมดซ่อนยอดเงิน (Privacy Mode) สำหรับใช้ในที่สาธารณะ
+*   **🌓 Premium Dark Theme:** ดีไซน์แบบ Glassmorphism ที่ทันสมัย สวยงาม และถนอมสายตา
+
+---
+
+## 🛠️ Tech Stack
+
+โปรเจกต์นี้เลือกใช้เทคโนโลยีที่ทันสมัยที่สุด เพื่อประสิทธิภาพและความลื่นไหล:
+
+*   **Frontend:** [Next.js 15](https://nextjs.org/) (App Router & Turbopack)
+*   **State Management:** [Zustand](https://docs.pmnd.rs/zustand/) (Offline-first architecture)
+*   **Styling:** [Tailwind CSS](https://tailwindcss.com/) & Vanilla CSS (Custom Glassmorphism)
+*   **Database & Auth:** [Supabase](https://supabase.com/) (PostgreSQL + RLS)
+*   **Utility:** Tesseract.js (OCR), Lucide React (Icons), jsPDF (Report generation)
+
+---
+
+## 🚀 Getting Started
+
+หากต้องการรันโปรเจกต์นี้ในเครื่องของคุณเอง:
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/ChunWarayut/Krapao.git
+   cd Krapao
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
+
+3. **Set up environment variables**
+   สร้างไฟล์ `.env` และใส่ API Keys จาก Supabase ของคุณ:
+   ```env
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_key
+   ```
+
+4. **Run development server**
+   ```bash
+   npm run dev
+   ```
+
+---
+
+## 📸 Screenshots
+
+| Dashboard Overview | Smart Features |
+| :---: | :---: |
+| ![Dashboard](https://raw.githubusercontent.com/ChunWarayut/Krapao/refs/heads/main/public/image.png) | ![Features](https://raw.githubusercontent.com/ChunWarayut/Krapao/refs/heads/main/public/logo.png) |
+
+---
+
+## 🤝 Contributing
+
+โปรเจกต์นี้เป็น Open Source! หากคุณมีไอเดียเจ๋งๆ หรืออยากช่วยแก้ Bug สามารถส่ง **Pull Request** มาได้เลยครับ เรายินดีต้อนรับทุกการสนับสนุน!
+
+---
+
+## 📄 License
+
+Distributed under the **MIT License**. See `LICENSE` for more information.
+
+---
+
+### 💡 About the Project
+
+Krapao ถูกสร้างขึ้นด้วยความใส่ใจในเรื่อง **User Experience** และ **Privacy** โดยมีเป้าหมายเพื่อทำให้การบันทึกรายจ่ายเป็นเรื่องสนุกและไม่น่าเบื่ออีกต่อไป หากคุณชอบโปรเจกต์นี้ อย่าลืมกด ⭐️ บน GitHub เพื่อเป็นกำลังใจให้ด้วยนะครับ!

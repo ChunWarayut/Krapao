@@ -35,6 +35,7 @@ export default function MobileNav() {
                         <Link
                             key={item.href}
                             href={item.href}
+                            aria-label={item.name}
                             className={cn(
                                 "flex flex-col items-center justify-center w-12 h-12 transition-all duration-300",
                                 isActive ? "text-brand-mint" : "text-white/30 hover:text-brand-emerald",
@@ -54,6 +55,7 @@ export default function MobileNav() {
                 {/* Central Add Button - Premium Floating Action Button */}
                 <Link
                     href="/transactions?add=true"
+                    aria-label="เพิ่มธุรกรรมใหม่"
                     className="absolute -top-7 left-1/2 -translate-x-1/2 w-16 h-16 bg-linear-to-br from-brand-mint to-brand-emerald rounded-full flex items-center justify-center text-white shadow-xl shadow-brand-mint/30 border-[6px] border-background active:scale-95 transition-all duration-300 group"
                 >
                     <Plus className="w-8 h-8 font-black group-hover:rotate-90 transition-transform duration-500" />

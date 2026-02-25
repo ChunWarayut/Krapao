@@ -1,6 +1,7 @@
 "use client"
 
 import Link from 'next/link';
+import NextImage from 'next/image';
 import { usePathname } from 'next/navigation';
 import {
     LayoutDashboard,
@@ -27,8 +28,13 @@ export default function Sidebar() {
     return (
         <aside className="hidden lg:flex flex-col w-72 h-screen sticky top-0 glass-sidebar p-8 z-20">
             <div className="flex items-center gap-4 mb-12 px-2 group cursor-pointer">
-                <div className="w-12 h-12 bg-linear-to-br from-brand-gold to-brand-violet rounded-2xl flex items-center justify-center shadow-lg shadow-brand-gold/20 group-hover:scale-110 transition-transform duration-300">
-                    <span className="text-white font-black text-2xl tracking-tighter">K</span>
+                <div className="w-12 h-12 relative flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                    <NextImage
+                        src="/logo.png"
+                        alt="Krapao Logo"
+                        fill
+                        className="object-contain drop-shadow-lg shadow-brand-gold/20"
+                    />
                 </div>
                 <div>
                     <h1 className="font-black text-2xl tracking-tighter text-white leading-none">Krapao</h1>
@@ -43,6 +49,7 @@ export default function Sidebar() {
                         <Link
                             key={item.href}
                             href={item.href}
+                            aria-label={item.name}
                             className={cn(
                                 "flex items-center gap-3 px-4 py-3.5 rounded-2xl transition-all duration-300 group relative cursor-pointer",
                                 isActive

@@ -1,7 +1,13 @@
+import type { Metadata } from 'next';
 import SummaryCards from '@/components/dashboard/SummaryCards';
 import HealthScore from '@/components/dashboard/HealthScore';
 import ExpensePieChart from '@/components/dashboard/ExpensePieChart';
 import RecentTransactions from '@/components/dashboard/RecentTransactions';
+
+export const metadata: Metadata = {
+    title: "Dashboard",
+    description: "ดูภาพรวมการเงินของคุณ สรุปค่าใช้จ่าย และวิเคราะห์พฤติกรรมการออมใวในที่เดียว",
+};
 
 export default function DashboardPage() {
     return (

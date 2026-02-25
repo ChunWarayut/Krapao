@@ -1,5 +1,11 @@
+import type { Metadata } from 'next';
 import TransactionForm from '@/components/transactions/TransactionForm';
 import TransactionList from '@/components/transactions/TransactionList';
+
+export const metadata: Metadata = {
+    title: "ธุรกรรม",
+    description: "บันทึกรายรับรายจ่ายของคุณอย่างรวดเร็ว พร้อมระบบสแกนใบเสร็จอัจฉริยะ",
+};
 
 export default function TransactionsPage() {
     return (

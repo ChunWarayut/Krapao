@@ -1,5 +1,6 @@
 "use client"
 
+import NextImage from 'next/image';
 import { useState, useEffect } from 'react';
 import { useKrapaoStore } from '@/lib/store';
 import { supabase } from '@/lib/supabase/client';
@@ -23,8 +24,13 @@ export default function Header() {
     return (
         <header className="h-20 flex items-center justify-between px-6 lg:px-10 bg-transparent sticky top-0 z-30 backdrop-blur-md">
             <div className="lg:hidden flex items-center gap-3">
-                <div className="w-10 h-10 bg-linear-to-br from-brand-mint to-brand-emerald rounded-xl flex items-center justify-center shadow-lg shadow-brand-mint/20">
-                    <span className="text-white font-black text-xl tracking-tighter">K</span>
+                <div className="w-10 h-10 relative flex items-center justify-center shadow-lg shadow-brand-mint/20">
+                    <NextImage
+                        src="/logo.png"
+                        alt="Krapao Logo"
+                        fill
+                        className="object-contain"
+                    />
                 </div>
                 <h1 className="font-black text-xl tracking-tighter text-white">Krapao</h1>
             </div>
@@ -48,7 +54,10 @@ export default function Header() {
                     {privacyMode ? <EyeOff className="w-5 h-5" /> : <Eye className="w-5 h-5" />}
                 </button>
 
-                <button className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-brand-mint backdrop-blur-md transition-all hover:scale-105 active:scale-95">
+                <button
+                    className="p-2.5 rounded-2xl bg-white/5 border border-white/10 text-brand-mint backdrop-blur-md transition-all hover:scale-105 active:scale-95"
+                    aria-label="การแจ้งเตือน"
+                >
                     <Bell className="w-5 h-5" />
                 </button>
 
@@ -82,6 +91,7 @@ export default function Header() {
                 <div className="relative">
                     <button
                         onClick={() => setShowDropdown(!showDropdown)}
+                        aria-label="เมนูผู้ใช้งาน"
                         className="w-11 h-11 rounded-2xl bg-linear-to-br from-brand-mint to-brand-emerald p-0.5 ml-2 shadow-lg shadow-brand-mint/10 flex items-center justify-center transition-transform hover:scale-105"
                     >
                         <div className="w-full h-full rounded-[14px] bg-emerald-950 overflow-hidden border-2 border-emerald-900 flex items-center justify-center">
