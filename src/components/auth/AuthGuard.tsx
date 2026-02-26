@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { supabase } from '@/lib/supabase/client'
+import { AuthChangeEvent, Session } from '@supabase/supabase-js'
 import { useKrapaoStore } from '@/lib/store'
 import AuthScreen from './AuthScreen'
 
@@ -16,8 +17,7 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
             const { data: { session } } = await supabase.auth.getSession()
 
             if (session?.user) {
-                // Determine if it's an anonymous/guest user
-                const isGuest = session.user.is_anonymous || false
+                const isGuest = (session.user as any).is_anonymous || false
                 handleUserAuthenticated(session.user.id, isGuest)
             } else {
                 setIsChecking(false)
@@ -27,12 +27,12 @@ export default function AuthGuard({ children }: { children: React.ReactNode }) {
         checkSession()
 
         // 2. Listen for auth changes (logout, etc)
-        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+        const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event: AuthChangeEvent, session: Session | null) => {
             if (event === 'SIGNED_OUT') {
                 clearUserData()
                 setIsAuthenticated(false)
             } else if (session?.user && event === 'SIGNED_IN') {
-                const isGuest = session.user.is_anonymous || false
+                const isGuest = (session.user as any).is_anonymous || false
                 handleUserAuthenticated(session.user.id, isGuest)
             }
         })

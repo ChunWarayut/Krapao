@@ -54,21 +54,47 @@ export const useKrapaoStore = create<KrapaoState>()(
 
             loadUserData: async (userId) => {
                 try {
-                    // Fetch pockets
-                    const { data: pocketsData } = await supabase.from('pockets').select('*').eq('user_id', userId);
-                    // Fetch categories
-                    const { data: categoriesData } = await supabase.from('categories').select('*').eq('user_id', userId);
-                    // Fetch transactions
-                    const { data: txData } = await supabase.from('transactions').select('*').eq('user_id', userId).order('date', { ascending: false });
-                    // Fetch goals
-                    const { data: goalsData } = await supabase.from('goals').select('*').eq('user_id', userId);
+                    // Fetch all data in parallel
+                    const [
+                        { data: pocketsData },
+                        { data: categoriesData },
+                        { data: txData },
+                        { data: goalsData }
+                    ] = await Promise.all([
+                        supabase.from('pockets').select('*').eq('user_id', userId),
+                        supabase.from('categories').select('*').eq('user_id', userId),
+                        supabase.from('transactions').select('*').eq('user_id', userId).order('date', { ascending: false }),
+                        supabase.from('goals').select('*').eq('user_id', userId)
+                    ]);
+
+                    let finalPockets = pocketsData || [];
+                    let finalCategories = categoriesData || [];
+
+                    // --- AUTOMATIC SEEDING FOR NEW USERS ---
+                    // If the user has no pockets, create the default ones in Supabase
+                    if (!pocketsData || pocketsData.length === 0) {
+                        const defaultPockets = [
+                            { id: `${userId}-pk-1`, user_id: userId, name: 'กระเป๋าหลัก', icon: 'Wallet', color: '#10b981', balance: 0 },
+                            { id: `${userId}-pk-2`, user_id: userId, name: 'เงินออม', icon: 'PiggyBank', color: '#34d399', balance: 0 },
+                        ];
+                        await supabase.from('pockets').upsert(defaultPockets, { onConflict: 'id' });
+                        finalPockets = defaultPockets;
+                    }
+
+                    // If the user has no categories, create the default ones in Supabase
+                    if (!categoriesData || categoriesData.length === 0) {
+                        const defaultCategoriesForUser = DEFAULT_CATEGORIES.map(cat => ({
+                            ...cat,
+                            id: `${userId}-${cat.id}`,
+                            user_id: userId
+                        }));
+                        await supabase.from('categories').upsert(defaultCategoriesForUser, { onConflict: 'id' });
+                        finalCategories = defaultCategoriesForUser;
+                    }
 
                     set({
-                        pockets: pocketsData && pocketsData.length > 0 ? pocketsData : [
-                            { id: 'pk-1', name: 'กระเป๋าหลัก', icon: 'Wallet', color: '#10b981', balance: 0 },
-                            { id: 'pk-2', name: 'เงินออม', icon: 'PiggyBank', color: '#34d399', balance: 0 },
-                        ],
-                        categories: categoriesData && categoriesData.length > 0 ? categoriesData : DEFAULT_CATEGORIES,
+                        pockets: finalPockets,
+                        categories: finalCategories,
                         transactions: txData || [],
                         goals: goalsData || [],
                     });
@@ -246,6 +272,7 @@ export const useKrapaoStore = create<KrapaoState>()(
                     await supabase.from('goals').update({ current_amount: goal.currentAmount }).eq('id', id);
                 }
             },
+
             togglePrivacyMode: () => set((state) => ({ privacyMode: !state.privacyMode })),
 
             resetAllData: async () => {

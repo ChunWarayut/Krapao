@@ -29,7 +29,7 @@ export default function TransactionForm({
     // Handle Quick Entry (Smart Tagging)
     const handleQuickInputChange = (val: string) => {
         setQuickInput(val);
-        const parsed = parseQuickEntry(val);
+        const parsed = parseQuickEntry(val, categories);
         if (parsed) {
             if (parsed.amount) setAmount(parsed.amount.toString());
             if (parsed.note) setNote(parsed.note);

@@ -57,8 +57,14 @@ export default function AuthScreen({ onAuthenticated }: { onAuthenticated: (user
 
             <div className="w-full max-w-md space-y-8 animate-slide-up">
                 <div className="text-center space-y-4">
-                    <div className="w-20 h-20 bg-linear-to-br from-emerald-400 to-teal-600 rounded-3xl mx-auto flex items-center justify-center shadow-2xl shadow-emerald-500/20">
-                        <Wallet className="w-10 h-10 text-white" />
+                    <div className="w-20 h-20 bg-emerald-950/40 border border-emerald-500/20 rounded-3xl mx-auto flex items-center justify-center shadow-2xl shadow-emerald-500/10 backdrop-blur-xl relative overflow-hidden group">
+                        <img
+                            src="/favicon.svg"
+                            alt="Krapao Logo"
+                            className="w-12 h-12 relative z-10 transition-transform duration-500 group-hover:scale-110"
+                        />
+                        {/* Subtle glow */}
+                        <div className="absolute inset-0 bg-emerald-500/5 blur-xl group-hover:bg-emerald-500/10 transition-colors" />
                     </div>
                     <div>
                         <h1 className="text-3xl font-black text-white tracking-tighter">Krapao</h1>

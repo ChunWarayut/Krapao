@@ -20,7 +20,8 @@ export default function InstallPrompt() {
     useEffect(() => {
         // Check if already installed or in standalone mode
         const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
-            (window.navigator as any).standalone;
+            (window.navigator as any).standalone ||
+            (document as any).referrer.includes('android-app://');
 
         if (isStandalone) return;
 
@@ -29,7 +30,7 @@ export default function InstallPrompt() {
 
         // Detect iOS
         const userAgent = window.navigator.userAgent;
-        const isIOSDevice = /iPad|iPhone|iPod/.test(userAgent) && !(window as any).MSStream;
+        const isIOSDevice = /iPad|iPhone|iPod/.test(userAgent) && !((window as any).MSStream);
 
         // Use a small delay for both state sets to avoid cascading render lint
         const timer = setTimeout(() => {
